@@ -1,6 +1,6 @@
 # Logstash Dockerfile
 
-Logstash 1.3.3 (with Kibana 3)
+Logstash 1.4.1 (with Kibana 3)
 
 
 Clone the repo
@@ -11,7 +11,11 @@ Create OpenSSL certificates for secure communication with logstash-forwarder.
 The build will fail if no certs are present.
 
     cd logstash-dockerfile && mkdir certs && cd certs
-    openssl req -x509 -batch -nodes -newkey rsa:2048 -keyout logstash-forwarder.key -out logstash-forwarder.crt
+
+    openssl genrsa -out logstash-ca.key 4096
+    openssl req -batch -new -x509 -days 3650 -key logstash-ca.key -out logstash-ca.crt
+    openssl req -new -nodes -keyout logstash.key -out logstash.csr -days 3650
+    openssl ca -days 3650 -cert logstash-ca.crt -keyfile logstash-ca.key -policy policy_anything -out logstash.crt -infiles logstash.csr
 
 Build
 
@@ -32,7 +36,7 @@ Specify an external Elasticsearch server
 
 Ports
 
-    514  (syslog)
+    5000 (tcp)
     5043 (lumberjack)
     9292 (logstash ui)
     9200 (elasticsearch)
@@ -41,10 +45,6 @@ Ports
 
 ### Other Evironment Variables in Dockerfile:
 
-What tag to use for lumberjack (logstash-forwarder):
-    
-    ENV LUMBERJACK_TAG MYTAG
-
 Number of elasticsearch workers:
-    
+
     ELASTICWORKERS 1

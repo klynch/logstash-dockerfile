@@ -10,23 +10,32 @@ fi
 
 cat << EOF > /opt/logstash.conf
 input {
-  syslog {
-    type => syslog
-    port => 514
+  tcp {
+    type => "dragonforce"
+    port => 5000
+    codec => json_lines
+
+    ssl_enable => true
+    ssl_cert => "/opt/certs/logstash.crt"
+    ssl_key => "/opt/certs/logstash.key"
+
+    ssl_cacert => "/opt/certs/logstash-ca.crt"
+    ssl_verify => true
   }
+
   lumberjack {
+    type => "system"
     port => 5043
 
-    ssl_certificate => "/opt/certs/logstash-forwarder.crt"
-    ssl_key => "/opt/certs/logstash-forwarder.key"
-
-    type => "$LUMBERJACK_TAG"
+    ssl_certificate => "/opt/certs/logstash.crt"
+    ssl_key => "/opt/certs/logstash.key"
   }
-  collectd {typesdb => ["/opt/collectd-types.db"]}
+
+  # collectd {typesdb => ["/opt/collectd-types.db"]}
 }
+
 output {
   stdout {
-      debug => true
   }
 
   elasticsearch {
@@ -38,5 +47,4 @@ output {
 }
 EOF
 
-
-exec java -jar /opt/logstash.jar agent -f /opt/logstash.conf -- web
+exec /opt/logstash-1.4.1/bin/logstash agent -f /opt/logstash.conf -- web

@@ -2,35 +2,40 @@
 #
 # logstash is a tool for managing events and logs
 #
-# VERSION               1.3.3
+# VERSION               1.4.1
 
-FROM      debian:sid
-MAINTAINER Deni Bertovic "deni@kset.org"
+FROM      ubuntu:14.04
+MAINTAINER Kevin Lynch "klynch@drakontas.com"
 
 ENV DEBIAN_FRONTEND noninteractive
-
-# What tag to use for lumberjack
-ENV LUMBERJACK_TAG MYTAG
 
 # Number of elasticsearch workers
 ENV ELASTICWORKERS 1
 
 RUN apt-get update
-RUN apt-get install -y wget openjdk-6-jre
-RUN wget https://download.elasticsearch.org/logstash/logstash/logstash-1.3.3-flatjar.jar -O /opt/logstash.jar --no-check-certificate 2>/dev/null
+RUN apt-get install -y curl openjdk-7-jre-headless
+RUN curl https://download.elasticsearch.org/logstash/logstash/logstash-1.4.1.tar.gz | tar -zx -C /opt
 
 ADD run.sh /usr/local/bin/run.sh
 RUN chmod +x /usr/local/bin/run.sh
 
 RUN mkdir /opt/certs/
-ADD certs/logstash-forwarder.crt /opt/certs/logstash-forwarder.crt
-ADD certs/logstash-forwarder.key /opt/certs/logstash-forwarder.key
+ADD certs/logstash-ca.crt /opt/certs/logstash-ca.crt
+ADD certs/logstash.crt /opt/certs/logstash.crt
+ADD certs/logstash.key /opt/certs/logstash.key
 ADD collectd-types.db /opt/collectd-types.db
 
-EXPOSE 514
+# Input: TCP
+EXPOSE 5000
+
+# Input: Lumberjack
 EXPOSE 5043
-EXPOSE 9200
+
+# Kibana
 EXPOSE 9292
+
+# Elastic search
+EXPOSE 9200
 EXPOSE 9300
 
 CMD /usr/local/bin/run.sh
