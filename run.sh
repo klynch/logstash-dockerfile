@@ -19,7 +19,7 @@ input {
     ssl_cert => "/opt/certs/logstash.crt"
     ssl_key => "/opt/certs/logstash.key"
 
-    ssl_cacert => "/opt/certs/logstash-ca.crt"
+    ssl_cacert => "/opt/certs/monitor-ca.crt"
     ssl_verify => true
   }
 
@@ -30,8 +30,6 @@ input {
     ssl_certificate => "/opt/certs/logstash.crt"
     ssl_key => "/opt/certs/logstash.key"
   }
-
-  # collectd {typesdb => ["/opt/collectd-types.db"]}
 }
 
 output {

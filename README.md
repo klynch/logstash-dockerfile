@@ -13,22 +13,17 @@ The build will fail if no certs are present.
     cd logstash-dockerfile && mkdir certs && cd certs
 
     openssl genrsa -out logstash-ca.key 4096
-    openssl req -batch -new -x509 -days 3650 -key logstash-ca.key -out logstash-ca.crt
+    openssl req -batch -new -x509 -days 3650 -key monitor-ca.key -out monitor-ca.crt
     openssl req -new -nodes -keyout logstash.key -out logstash.csr -days 3650
-    openssl ca -days 3650 -cert logstash-ca.crt -keyfile logstash-ca.key -policy policy_anything -out logstash.crt -infiles logstash.csr
+    openssl ca -days 3650 -cert logstash-ca.crt -keyfile monitor-ca.key -policy policy_anything -out logstash.crt -infiles logstash.csr
 
 Build
 
+    #Build the image
     docker build -t logstash .
 
-Test it:
-
-    docker run -p 5043:5043 -p 514:514 -p 9200:9200 -p 9292:9292 -p 9300:9300 -i -t logstash
-    netcat localhost 514
-        > test
-        > test
-        > CTRL+C
-    # You should see the messages show up on logstash
+    #Build the container
+    docker run -p 5000:5000 -p 5043:5043 -p 9200:9200 -p 9292:9292 -d --name logstash logstash
 
 Specify an external Elasticsearch server
 

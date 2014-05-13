@@ -20,7 +20,7 @@ ADD run.sh /usr/local/bin/run.sh
 RUN chmod +x /usr/local/bin/run.sh
 
 RUN mkdir /opt/certs/
-ADD certs/logstash-ca.crt /opt/certs/logstash-ca.crt
+ADD certs/monitor-ca.crt /opt/certs/monitor-ca.crt
 ADD certs/logstash.crt /opt/certs/logstash.crt
 ADD certs/logstash.key /opt/certs/logstash.key
 
