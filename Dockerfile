@@ -23,7 +23,6 @@ RUN mkdir /opt/certs/
 ADD certs/logstash-ca.crt /opt/certs/logstash-ca.crt
 ADD certs/logstash.crt /opt/certs/logstash.crt
 ADD certs/logstash.key /opt/certs/logstash.key
-ADD collectd-types.db /opt/collectd-types.db
 
 # Input: TCP
 EXPOSE 5000
