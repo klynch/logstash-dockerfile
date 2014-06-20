@@ -49,3 +49,8 @@ Number of elasticsearch workers:
   * WORKERS The number of logstash workers (default: 1)
   * ES_HOST The Elasticache host (default: localhost)
   * ES_PORT The Elasticache port (default: 9300)
+
+
+### Host configuration (Ubuntu):
+
+  1. Copy `host-conf/upstart/logstash.conf` to `/etc/init/logstash.conf`
