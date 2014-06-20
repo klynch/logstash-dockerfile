@@ -1,17 +1,21 @@
 #!/bin/bash
-ES_HOST=${ES_HOST:-127.0.0.1}
-ES_PORT=${ES_PORT:-9300}
+
+LOGSTASH_DEFAULT_TYPE=${1:default}
+WORKERS=${2:-1}
+ES_HOST=${3:-127.0.0.1}
+ES_PORT=${4:-9300}
 EMBEDDED="false"
-WORKERS=${ELASTICWORKERS:-1}
 
 if [ "$ES_HOST" = "127.0.0.1" ] ; then
     EMBEDDED="true"
 fi
 
+service ssh start
+
 cat << EOF > /opt/logstash.conf
 input {
   tcp {
-    type => "dragonforce"
+    type => "$LOGSTASH_DEFAULT_TYPE"
     port => 5000
     codec => json_lines
 
